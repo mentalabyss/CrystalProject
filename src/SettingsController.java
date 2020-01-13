@@ -7,8 +7,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SettingsController implements Initializable {
 
@@ -37,6 +39,7 @@ public class SettingsController implements Initializable {
         color.setCellValueFactory(new PropertyValueFactory<Atom, Color>("color"));
         visibleSelect.setCellValueFactory(new PropertyValueFactory<Atom, CheckBox>("select"));
 
+
         //tableView.getItems().add(new Atom("", "0", "0", "0"));
     }
 
@@ -48,22 +51,30 @@ public class SettingsController implements Initializable {
 
     public void updateButtonPressed(){
         Main.getInstance().buildLoadedCell();
+        tableView.setItems(Main.getInstance().crystalCell.getList());
+
+        //tableView.refresh();
     }
 
     public void deleteButtonPressed(){
 
         ObservableList<Atom> atomsToRemove = FXCollections.observableArrayList();
+        ArrayList<SerAtom> serAtomsToRemove = new ArrayList<SerAtom>();
 
         for(int i = 0; i < Main.getInstance().crystalCell.getList().size(); i++){
             Atom atom = Atom.class.cast(Main.getInstance().crystalCell.getList().get(i)) ;
-            if(atom.getSelect().isSelected())
+            SerAtom serAtom = Main.getInstance().crystalCell.arrayList.get(i);
+            if(atom.getSelect().isSelected()) {
                 atomsToRemove.add(atom);
+                serAtomsToRemove.add(serAtom);
+            }
         }
 
         Main.getInstance().crystalCell.getList().removeAll(atomsToRemove);
+        Main.getInstance().crystalCell.arrayList.removeAll(serAtomsToRemove);
 
         updateButtonPressed();
-        tableView.refresh();
+        //tableView.refresh();
 
     }
 

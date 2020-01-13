@@ -9,6 +9,18 @@ public class Atom implements Serializable {
     private Color color;
     private CheckBox select;
 
+    public Atom(SerAtom serAtom){
+
+
+        element = serAtom.getElement();
+        x = serAtom.getX();
+        y = serAtom.getY();
+        z = serAtom.getZ();
+        color = new Color(serAtom.getRed(), serAtom.getGreen(), serAtom.getBlue(), serAtom.getAlpha());
+        select = new CheckBox();
+        select.setSelected(serAtom.getCheckBox());
+    }
+
     public String getElement(){
         return element;
     }

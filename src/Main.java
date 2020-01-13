@@ -29,6 +29,8 @@ import javafx.util.Duration;
 import sun.rmi.server.DeserializationChecker;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Main extends Application {
         VBox vBox;
@@ -133,6 +135,7 @@ public class Main extends Application {
                         90, 90, 90, 5365.24); //HARD CODE (CHANGE NEEDED)
 
         buildAxes(crystalCell);
+        buildCellBoundaries(crystalCell);
     }
 
     public void AddElementToCell(Atom atom){
@@ -153,20 +156,21 @@ public class Main extends Application {
 
     }
 
-    public void SerializeCell(){
-        String filename = "test.ser";
+    public void SerializeCell(File file){
+        //String filename = "test.ser";
 
         try
         {
             //Saving of object in a file
-            FileOutputStream file = new FileOutputStream(filename);
-            ObjectOutputStream out = new ObjectOutputStream(file);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fileOutputStream);
+
 
             // Method for serialization of object
             out.writeObject(crystalCell);
 
             out.close();
-            file.close();
+            fileOutputStream.close();
 
             System.out.println("Object has been serialized");
 
@@ -178,33 +182,118 @@ public class Main extends Application {
         }
     }
 
-    public void DeserCell(){
-        String filename = "test.ser";
+    public void DeserCell(File file){
+        //String filename = file.getName();
+
+        System.out.println(file);
 
         try
         {
             // Reading the object from a file
-            FileInputStream file = new FileInputStream(filename);
-            ObjectInputStream in = new ObjectInputStream(file);
+            //FileInputStream fileInputStream = new FileInputStream(filename);
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ObjectInputStream in = new ObjectInputStream(fileInputStream);
 
             // Method for deserialization of object
-            crystalCell = (CrystalCell) in.readObject();
+            crystalCell = (CrystalCell)in.readObject();
+            crystalCell.ArrayListToList();
 
             in.close();
-            file.close();
+            fileInputStream.close();
 
             buildLoadedCell();
         }
 
         catch(IOException ex)
         {
-            System.out.println("IOException is caught");
+            System.out.println(ex.getMessage());
         }
 
         catch(ClassNotFoundException ex)
         {
             System.out.println("ClassNotFoundException is caught");
         }
+    }
+
+    private  void buildCellBoundaries(CrystalCell crystalCell){
+        final Group boundariesGroup = new Group();
+        final Group xBoundaries = new Group();
+        final Group yBoundaries = new Group();
+        final Group zBoundaries = new Group();
+
+
+        final Box xLine = new Box(crystalCell.getyLength(), 0.1, 0.1);
+        final Box yLine = new Box(0.1, crystalCell.getzLength(), 0.1);
+        final Box zLine = new Box(0.1, 0.1, crystalCell.getxLength());
+
+
+        final Box xLine1 = new Box(crystalCell.getyLength(), 0.1, 0.1);
+        final Box xLine2 = new Box(crystalCell.getyLength(), 0.1, 0.1);
+        final Box xLine3 = new Box(crystalCell.getyLength(), 0.1, 0.1);
+
+        xLine1.setTranslateY(-yLine.getHeight());
+
+        xLine2.setTranslateY(-yLine.getHeight());
+        xLine2.setTranslateZ(-zLine.getDepth());
+
+        xLine3.setTranslateZ(-zLine.getDepth());
+
+        xBoundaries.getChildren().add(xLine);
+        xBoundaries.getChildren().add(xLine1);
+        xBoundaries.getChildren().add(xLine2);
+        xBoundaries.getChildren().add(xLine3);
+
+
+        final Box yLine1 = new Box(0.1, crystalCell.getzLength(), 0.1);
+        final Box yLine2 = new Box(0.1, crystalCell.getzLength(), 0.1);
+        final Box yLine3 = new Box(0.1, crystalCell.getzLength(), 0.1);
+
+        yLine1.setTranslateX(xLine.getWidth());
+
+        yLine2.setTranslateZ(-zLine.getDepth());
+        yLine2.setTranslateX(xLine.getWidth());
+
+        yLine3.setTranslateZ(-zLine.getDepth());
+
+        yBoundaries.getChildren().add(yLine);
+        yBoundaries.getChildren().add(yLine1);
+        yBoundaries.getChildren().add(yLine2);
+        yBoundaries.getChildren().add(yLine3);
+
+
+        final Box zLine1 = new Box(0.1, 0.1, crystalCell.getxLength());
+        final Box zLine2 = new Box(0.1, 0.1, crystalCell.getxLength());
+        final Box zLine3 = new Box(0.1, 0.1, crystalCell.getxLength());
+
+        zLine1.setTranslateY(-yLine.getHeight());
+
+        zLine2.setTranslateY(-yLine.getHeight());
+        zLine2.setTranslateX(xLine.getWidth());
+
+        zLine3.setTranslateX(xLine.getWidth());
+
+        zBoundaries.getChildren().add(zLine);
+        zBoundaries.getChildren().add(zLine1);
+        zBoundaries.getChildren().add(zLine2);
+        zBoundaries.getChildren().add(zLine3);
+
+
+//        xBoundaries.getChildren().add(xLine1);
+//        xBoundaries.getChildren().add(xLine2);
+//        xBoundaries.getChildren().add(xLine3);
+
+
+        //xLine.setTranslateX(0.5 * crystalCell.getyLength());
+        xBoundaries.setTranslateX(0.5 * crystalCell.getyLength());
+        yBoundaries.setTranslateY(-0.5 * crystalCell.getzLength());
+        zBoundaries.setTranslateZ(-0.5 * crystalCell.getxLength());
+
+        boundariesGroup.getChildren().add(xBoundaries);
+        boundariesGroup.getChildren().add(yBoundaries);
+        boundariesGroup.getChildren().add(zBoundaries);
+
+
+        group3d.getChildren().addAll(boundariesGroup);
     }
 
     private void buildAxes(CrystalCell crystalCell) {
@@ -248,7 +337,7 @@ public class Main extends Application {
         crystalCell.getList().forEach(node -> {
             Atom atom = Atom.class.cast(node);
 
-            Sphere sphere = new Sphere(1);
+            Sphere sphere = new Sphere(0.6);
 
             PhongMaterial phongMaterial = new PhongMaterial();
             phongMaterial.setDiffuseColor(atom.getColor());
@@ -274,7 +363,7 @@ public class Main extends Application {
         crystalCell.getList().forEach(node -> {
             Atom atom = Atom.class.cast(node);
 
-            Sphere sphere = new Sphere(1);
+            Sphere sphere = new Sphere(0.6);
 
             PhongMaterial phongMaterial = new PhongMaterial();
             phongMaterial.setDiffuseColor(atom.getColor());
@@ -287,6 +376,8 @@ public class Main extends Application {
             sphere.setTranslateY(atom.getZ() * crystalCell.getzLength() * (-1));
             sphere.setTranslateZ(atom.getX() * crystalCell.getxLength() * (-1));
         });
+
+        buildCellBoundaries(crystalCell);
     }
 
 

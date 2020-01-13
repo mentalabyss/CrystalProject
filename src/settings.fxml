@@ -54,6 +54,6 @@
                </children>
             </VBox>
          </content></TitledPane>
-    <TitledPane animated="false" text="untitled 2" />
+    <TitledPane animated="false" text="Параметры ячейки" />
   </panes>
 </Accordion>
