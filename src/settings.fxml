@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<Accordion maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SettingsController">
+  <panes>
+    <TitledPane animated="false" text="Таблица элементов">
+         <content>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="updateButton" minWidth="80.0" mnemonicParsing="false" onAction="#updateButtonPressed" text="Обновить" />
+                        <Button fx:id="hideButton" layoutX="90.0" layoutY="10.0" minWidth="80.0" mnemonicParsing="false" onAction="#hideButtonPressed" text="Спрятать выбранное" />
+                        <Pane prefHeight="200.0" prefWidth="200.0" />
+                        <Button fx:id="deleteButton" layoutX="10.0" layoutY="10.0" minWidth="80.0" mnemonicParsing="false" onAction="#deleteButtonPressed" text="Удалить выбранное" />
+                     </children>
+                  </HBox>
+                  <TableView fx:id="tableView">
+                    <columns>
+                      <TableColumn fx:id="element" prefWidth="75.0" text="Атом" />
+                      <TableColumn prefWidth="75.0" text="x" fx:id="x" />
+                        <TableColumn fx:id="y" prefWidth="75.0" text="y" />
+                        <TableColumn fx:id="z" prefWidth="75.0" text="z" />
+                        <TableColumn fx:id="color" prefWidth="75.0" text="Цвет" />
+                        <TableColumn fx:id="visibleSelect" prefWidth="75.0" text="Выбрать" />
+                        <TableColumn prefWidth="75.0" />
+                    </columns>
+                  </TableView>
+                  <HBox>
+                     <children>
+                        <TextField fx:id="addedElement" promptText="Атом" />
+                        <TextField fx:id="addedX" layoutX="10.0" layoutY="10.0" promptText="x" />
+                        <TextField fx:id="addedY" layoutX="10.0" layoutY="10.0" promptText="y" />
+                        <TextField fx:id="addedZ" layoutX="10.0" layoutY="10.0" promptText="z" />
+                        <ColorPicker fx:id="addedColor" minWidth="85.0" />
+                        <Button minWidth="70.0" mnemonicParsing="false" onAction="#addButtonPressed" text="Добавить" HBox.hgrow="NEVER">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content></TitledPane>
+    <TitledPane animated="false" text="untitled 2" />
+  </panes>
+</Accordion>
