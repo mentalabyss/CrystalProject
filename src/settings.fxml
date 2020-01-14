@@ -54,6 +54,24 @@
                </children>
             </VBox>
          </content></TitledPane>
-    <TitledPane animated="false" text="Параметры ячейки" />
+    <TitledPane animated="false" text="Параметры ячейки">
+         <content>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <HBox>
+                     <children>
+                        <TextField fx:id="cellA" promptText="a" />
+                        <TextField fx:id="cellB" promptText="b" />
+                        <TextField fx:id="cellC" promptText="c" />
+                        <TextField fx:id="cellAlpha" promptText="alpha" />
+                        <TextField fx:id="cellBeta" promptText="beta" />
+                        <TextField fx:id="cellGamma" promptText="gamma" />
+                        <TextField fx:id="cellVolume" promptText="Объем" />
+                     </children>
+                  </HBox>
+                  <Button fx:id="cellApply" mnemonicParsing="false" onAction="#cellApplyButtonPressed" text="Применить" />
+               </children>
+            </VBox>
+         </content></TitledPane>
   </panes>
 </Accordion>

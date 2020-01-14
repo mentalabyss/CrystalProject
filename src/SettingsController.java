@@ -21,6 +21,13 @@ public class SettingsController implements Initializable {
     @FXML public TextField addedY;
     @FXML public TextField addedZ;
     @FXML public ColorPicker addedColor;
+    @FXML public TextField cellA;
+    @FXML public TextField cellB;
+    @FXML public TextField cellC;
+    @FXML public TextField cellAlpha;
+    @FXML public TextField cellBeta;
+    @FXML public TextField cellGamma;
+    @FXML public TextField cellVolume;
 
     @FXML private TableColumn<Atom, String> element;
     @FXML private TableColumn<Atom, Double> x;
@@ -46,12 +53,12 @@ public class SettingsController implements Initializable {
     public void addButtonPressed(){
         Color color1 = addedColor.getValue();
         Main.getInstance().AddElementToCell(new Atom(addedElement.getText(), addedX.getText(), addedY.getText(),addedZ.getText(), color1));
-        tableView.setItems(Main.getInstance().crystalCell.getList());
+        tableView.setItems(Main.getInstance().loadedCrystalCell.getList());
     }
 
     public void updateButtonPressed(){
-        Main.getInstance().buildLoadedCell();
-        tableView.setItems(Main.getInstance().crystalCell.getList());
+        Main.getInstance().buildLoadedCell(Main.getInstance().loadedCrystalCell);
+        tableView.setItems(Main.getInstance().loadedCrystalCell.getList());
 
         //tableView.refresh();
     }
@@ -61,17 +68,17 @@ public class SettingsController implements Initializable {
         ObservableList<Atom> atomsToRemove = FXCollections.observableArrayList();
         ArrayList<SerAtom> serAtomsToRemove = new ArrayList<SerAtom>();
 
-        for(int i = 0; i < Main.getInstance().crystalCell.getList().size(); i++){
-            Atom atom = Atom.class.cast(Main.getInstance().crystalCell.getList().get(i)) ;
-            SerAtom serAtom = Main.getInstance().crystalCell.arrayList.get(i);
+        for(int i = 0; i < Main.getInstance().loadedCrystalCell.getList().size(); i++){
+            Atom atom = Atom.class.cast(Main.getInstance().loadedCrystalCell.getList().get(i)) ;
+            SerAtom serAtom = Main.getInstance().loadedCrystalCell.arrayList.get(i);
             if(atom.getSelect().isSelected()) {
                 atomsToRemove.add(atom);
                 serAtomsToRemove.add(serAtom);
             }
         }
 
-        Main.getInstance().crystalCell.getList().removeAll(atomsToRemove);
-        Main.getInstance().crystalCell.arrayList.removeAll(serAtomsToRemove);
+        Main.getInstance().loadedCrystalCell.getList().removeAll(atomsToRemove);
+        Main.getInstance().loadedCrystalCell.arrayList.removeAll(serAtomsToRemove);
 
         updateButtonPressed();
         //tableView.refresh();
@@ -80,5 +87,22 @@ public class SettingsController implements Initializable {
 
     public  void hideButtonPressed(){
         Main.getInstance().hideSelected();
+    }
+
+    public void cellApplyButtonPressed(){
+
+
+        CrystalCell crystalCell = new CrystalCell(Double.parseDouble(cellA.getText()), Double.parseDouble(cellB.getText()),
+                Double.parseDouble(cellC.getText()), Double.parseDouble(cellAlpha.getText()), Double.parseDouble(cellBeta.getText()),
+                Double.parseDouble(cellGamma.getText()), Double.parseDouble(cellVolume.getText()));
+
+
+        crystalCell.arrayList = Main.getInstance().loadedCrystalCell.arrayList;
+        crystalCell.ArrayListToList();
+
+        Main.getInstance().loadedCrystalCell = crystalCell;
+        Main.getInstance().buildAxes(crystalCell);
+        Main.getInstance().buildCellBoundaries(crystalCell);
+        Main.getInstance().buildLoadedCell(crystalCell);
     }
 }

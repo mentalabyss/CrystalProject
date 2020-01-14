@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CrystalProjectJava:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/CrystalProjectJava_jar</output-path>
+    <root id="archive" name="CrystalProjectJava.jar">
+      <element id="module-output" name="CrystalProjectJava" />
+    </root>
+  </artifact>
+</component>

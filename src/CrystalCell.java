@@ -29,6 +29,14 @@ public class CrystalCell implements Serializable {
         arrayList = new ArrayList<SerAtom>();
         System.out.println("Crystal cell constructed");
     }
+
+//    public CrystalCell(CrystalCell crystalCell){
+//        list = FXCollections.observableArrayList();
+//        arrayList = new ArrayList<SerAtom>();
+//        list = crystalCell.getList();
+//        arrayList = crystalCell.arrayList;
+//    }
+
     public void AddElement(Atom atom){
         System.out.println("Added atom to list");
         list.add(atom);

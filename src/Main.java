@@ -37,7 +37,7 @@ public class Main extends Application {
 
     SubScene subScene;
 
-    public CrystalCell crystalCell;
+    public CrystalCell loadedCrystalCell;
 
 
     private double anchorX, anchorY;
@@ -49,6 +49,10 @@ public class Main extends Application {
     private final DoubleProperty angleY = new SimpleDoubleProperty(0);
 
     Group group3d;
+
+    Group axisGroup;
+
+    Group boundariesGroup;
 
     private static Main instance;
 
@@ -71,6 +75,7 @@ public class Main extends Application {
         //this.BorderPane1 = FXMLLoader.load(getClass().getResource("main.fxml"));
 
 
+        axisGroup = new Group();
 
         group3d = new Group();
 
@@ -130,29 +135,29 @@ public class Main extends Application {
         //subScene.widthProperty().bind(rootPane.widthProperty());
         //subScene.heightProperty().bind(rootPane.heightProperty());
 
-        crystalCell = new CrystalCell(
+        loadedCrystalCell = new CrystalCell(
                         20.06999, 19.92, 13.42,
                         90, 90, 90, 5365.24); //HARD CODE (CHANGE NEEDED)
 
-        buildAxes(crystalCell);
-        buildCellBoundaries(crystalCell);
+        buildAxes(loadedCrystalCell);
+        buildCellBoundaries(loadedCrystalCell);
     }
 
     public void AddElementToCell(Atom atom){
-        crystalCell.AddElement(atom);
+        loadedCrystalCell.AddElement(atom);
 
-        Sphere sphere = new Sphere(1);
+        Sphere sphere = new Sphere(0.6);
 
         PhongMaterial phongMaterial = new PhongMaterial();
         phongMaterial.setDiffuseColor(atom.getColor());
 
         sphere.setMaterial(phongMaterial);
 
-        group3d.getChildren().add(sphere);;
+        group3d.getChildren().add(sphere);
 
-        sphere.setTranslateX(atom.getY() * crystalCell.getyLength());
-        sphere.setTranslateY(atom.getZ() * crystalCell.getzLength() * (-1));
-        sphere.setTranslateZ(atom.getX() * crystalCell.getxLength() * (-1));
+        sphere.setTranslateX(atom.getY() * loadedCrystalCell.getyLength());
+        sphere.setTranslateY(atom.getZ() * loadedCrystalCell.getzLength() * (-1));
+        sphere.setTranslateZ(atom.getX() * loadedCrystalCell.getxLength() * (-1));
 
     }
 
@@ -167,7 +172,7 @@ public class Main extends Application {
 
 
             // Method for serialization of object
-            out.writeObject(crystalCell);
+            out.writeObject(loadedCrystalCell);
 
             out.close();
             fileOutputStream.close();
@@ -195,13 +200,13 @@ public class Main extends Application {
             ObjectInputStream in = new ObjectInputStream(fileInputStream);
 
             // Method for deserialization of object
-            crystalCell = (CrystalCell)in.readObject();
-            crystalCell.ArrayListToList();
+            loadedCrystalCell = (CrystalCell)in.readObject();
+            loadedCrystalCell.ArrayListToList();
 
             in.close();
             fileInputStream.close();
 
-            buildLoadedCell();
+            buildLoadedCell(loadedCrystalCell);
         }
 
         catch(IOException ex)
@@ -215,8 +220,14 @@ public class Main extends Application {
         }
     }
 
-    private  void buildCellBoundaries(CrystalCell crystalCell){
-        final Group boundariesGroup = new Group();
+    public void buildCellBoundaries(CrystalCell crystalCell){
+
+        //boundariesGroup.getChildren().clear();
+
+        group3d.getChildren().remove(boundariesGroup);
+
+        boundariesGroup = new Group();
+
         final Group xBoundaries = new Group();
         final Group yBoundaries = new Group();
         final Group zBoundaries = new Group();
@@ -296,8 +307,11 @@ public class Main extends Application {
         group3d.getChildren().addAll(boundariesGroup);
     }
 
-    private void buildAxes(CrystalCell crystalCell) {
-        final Group axisGroup = new Group();
+    protected void buildAxes(CrystalCell crystalCell) {
+
+        axisGroup.getChildren().clear();
+        group3d.getChildren().remove(axisGroup);
+
         System.out.println("buildAxes()");
         final PhongMaterial redMaterial = new PhongMaterial();
         redMaterial.setDiffuseColor(Color.DARKRED);
@@ -327,14 +341,14 @@ public class Main extends Application {
     }
 
     void deleteCell(){
-        group3d.getChildren().remove(2, group3d.getChildren().size());
+        group3d.getChildren().remove(1, group3d.getChildren().size());
     }
 
     void hideSelected() {
 
         deleteCell();
 
-        crystalCell.getList().forEach(node -> {
+        loadedCrystalCell.getList().forEach(node -> {
             Atom atom = Atom.class.cast(node);
 
             Sphere sphere = new Sphere(0.6);
@@ -348,13 +362,13 @@ public class Main extends Application {
 
             sphere.setVisible(!atom.getSelect().isSelected());
 
-            sphere.setTranslateX(atom.getY() * crystalCell.getyLength());
-            sphere.setTranslateY(atom.getZ() * crystalCell.getzLength() * (-1));
-            sphere.setTranslateZ(atom.getX() * crystalCell.getxLength() * (-1));
+            sphere.setTranslateX(atom.getY() * loadedCrystalCell.getyLength());
+            sphere.setTranslateY(atom.getZ() * loadedCrystalCell.getzLength() * (-1));
+            sphere.setTranslateZ(atom.getX() * loadedCrystalCell.getxLength() * (-1));
         });
     }
 
-    void buildLoadedCell(){
+    void buildLoadedCell(CrystalCell crystalCell){
 
         System.out.println("buildLoadedCell");
 
